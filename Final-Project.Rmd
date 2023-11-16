@@ -1,0 +1,58 @@
+---
+title: "Stat 251: Practice Rmd File"
+author: "FirstName LastName"
+date: "9/27/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+#these are default options so that by default, your pdf will include the code from your code chunks
+knitr::opts_chunk$set(echo = TRUE)
+
+#You will also want to load any external libraries you'll be using, e.g., ggplot, in your document here (you can load them at anytime, but it's good practice to load them at the beginning)
+#run the line below just once: 
+#tinytex::install_tinytex()
+
+library(tinytex)
+
+
+#Finally, you may also want to change your working directory here using: setwd(filepath) #default is to use the directory where this file is stored.  If you use the default, you will want to put the two data files in the same folder as this Rmd file.
+```
+
+1a. In this problem, draw a random vector of size 100 from a $\mbox{Bin}(n = 20, \theta = 0.4)$ and make a histogram of the vector.  
+```{r answer1a}
+#Include your code for answer 1a here.  
+mysamp <- rbinom(100, size=20, prob=0.4)
+hist(mysamp)
+```
+
+Here you can type any text you might want to include, like a comment about the graph or something.  
+
+
+1b. In this problem, download the Rdata file provided at https://byu.box.com/v/PracticeRdataFile. Read in the downloaded Rdata file ('PracticeRmdRdata.Rdata') and compute the mean of the variable called 'x'.
+```{r answer1b}
+#Include your code for answer 1b here. 
+#If you have a mac/linux, uncomment the line below and change "filepath" appropriately: 
+load('PracticeRmdRdata.Rdata')
+#If you have a pc, uncomment the line below: 
+#load('C:\\filepath\\PracticeRmdRdata.Rdata')
+mean(x)
+```
+Here you can type text about the code or output above, for example, the mean of 'x' is `r mean(x)`.
+
+
+1c. In this problem, download the csv file provided at https://byu.box.com/v/PracticeCSVfile.  Read the downloaded csv file ('PracticeRmdCSV.csv') and compute the standard deviation of the variable called 'y'.
+```{r answer1c}
+#Include your code for answer 1c here.  
+dat <- read.csv('PracticeRmdCSV.csv', header=T) #adjust to accommodate your OS and filepath
+sd(dat$y)
+```
+Here you can type text for your answer to 1c, such as, the standard deviation of y is `r sd(dat$y)`.
+
+
+2. Here is a list of some common tex notation we will use in this class: 
+  - $X|\theta \sim \mbox{Bin}(n, \theta)$
+  - $\theta | \mbox{data} \sim \mbox{Beta}(80, 36.4)$
+  - $E(\theta | X ) = 2.5$
+  - Some common Greek letters: $\alpha$, $\beta$, $\gamma$, $\phi$, $\pi$, $\lambda$, $\theta$, $\mu$, $\sigma$
+  - Subscript and superscript: $\mu_X$ and $\sigma_X^2$
