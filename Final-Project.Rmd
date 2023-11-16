@@ -1,7 +1,7 @@
 ---
-title: "Stat 251: Practice Rmd File"
-author: "FirstName LastName"
-date: "9/27/2022"
+title: "Stat 251 Final Project: Disney vs. LucasFilms"
+author: "Aaron Brown, Aly Milne, Andrew Bergeron"
+date: "11/15/2023"
 output: pdf_document
 ---
 
