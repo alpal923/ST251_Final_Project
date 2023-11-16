@@ -1,0 +1,41 @@
+,primaryTitle,seasonNumber,AverageRating,NumVotes,startYear,genres,tconst,titleType,originalTitle
+0,star wars,,8.6,1316124,1977,"Action,Adventure,Fantasy",tt0076759,movie,Star Wars
+1,star wars: episode v - the empire strikes back,,8.7,1244640,1980,"Action,Adventure,Fantasy",tt0080684,movie,The Empire Strikes Back
+2,star wars: episode vi - return of the jedi,,8.3,1017049,1983,"Action,Adventure,Fantasy",tt0086190,movie,Star Wars: Episode VI - Return of the Jedi
+3,star wars: episode i - the phantom menace,,6.5,777303,1999,"Action,Adventure,Fantasy",tt0120915,movie,Star Wars: Episode I - The Phantom Menace
+4,star wars: episode ii - attack of the clones,,6.6,685915,2002,"Action,Adventure,Fantasy",tt0121765,movie,Star Wars: Episode II - Attack of the Clones
+5,star wars: episode iii - revenge of the sith,,7.6,760340,2005,"Action,Adventure,Fantasy",tt0121766,movie,Star Wars: Episode III - Revenge of the Sith
+6,the star wars holiday special,,2.1,15082,1978,"Adventure,Family,Musical",tt0193524,tvMovie,The Star Wars Holiday Special
+7,star wars: rogue squadron,,,,2023,"Action,Adventure,Drama",tt10300394,movie,Rogue Squadron
+8,star wars: episode vii - the force awakens,,7.9,906050,2015,"Action,Adventure,Sci-Fi",tt2488496,movie,Star Wars: Episode VII - The Force Awakens
+9,star wars: episode viii - the last jedi,,6.9,608814,2017,"Action,Adventure,Fantasy",tt2527336,movie,Star Wars: Episode VIII - The Last Jedi
+10,star wars: episode ix - the rise of skywalker,,6.5,426389,2019,"Action,Adventure,Fantasy",tt2527338,movie,Star Wars: Episode IX - The Rise of Skywalker
+11,rogue one: a star wars story,,7.8,602504,2016,"Action,Adventure,Sci-Fi",tt3748528,movie,Rogue One
+12,solo: a star wars story,,6.9,328892,2018,"Action,Adventure,Sci-Fi",tt3778644,movie,Solo: A Star Wars Story
+13,ahsoka,1,7.6,90009,2023,"Action,Adventure,Drama",tt13622776,tvSeries,Ahsoka
+14,andor,1,8.4,153453,2022,"Action,Adventure,Drama",tt9253284,tvSeries,Andor
+15,obi-wan kenobi,1,7.1,219751,2022,"Action,Adventure,Sci-Fi",tt8466564,tvSeries,Obi-Wan Kenobi
+16,star wars: clone wars,1,7.8,4875,2003,"Action,Adventure,Animation",tt0361243,tvSeries,Star Wars: Clone Wars
+17,star wars: clone wars,2,8.1,4724,2004,"Action,Adventure,Animation",tt0361243,tvSeries,Star Wars: Clone Wars
+18,star wars: clone wars,3,8.4,2236,2005,"Action,Adventure,Animation",tt0361243,tvSeries,Star Wars: Clone Wars
+19,star wars: droids,1,6.5,1265,1985,"Action,Adventure,Animation",tt0088510,tvSeries,Star Wars: Droids
+20,star wars: droids,\N,6,232,1985,"Action,Adventure,Animation",tt0088510,tvSeries,Star Wars: Droids
+21,star wars: rebels,1,7.8,25680,2014,"Action,Adventure,Animation",tt2930604,tvSeries,Star Wars: Rebels
+22,star wars: rebels,2,8.2,39026,2015,"Action,Adventure,Animation",tt2930604,tvSeries,Star Wars: Rebels
+23,star wars: rebels,3,8.1,33634,2016,"Action,Adventure,Animation",tt2930604,tvSeries,Star Wars: Rebels
+24,star wars: rebels,4,8.4,23368,2017,"Action,Adventure,Animation",tt2930604,tvSeries,Star Wars: Rebels
+25,star wars: rebels,\N,7.2,1962,2014,"Action,Adventure,Animation",tt2930604,tvSeries,Star Wars: Rebels
+26,star wars: roll out,1,6.1,130,2019,"Animation,Family,Sci-Fi",tt10799452,tvSeries,Star Wars: Roll Out
+27,star wars: the bad batch,1,8,46224,2021,"Action,Adventure,Animation",tt12708542,tvSeries,Star Wars: The Bad Batch
+28,star wars: the bad batch,2,7.9,26772,2023,"Action,Adventure,Animation",tt12708542,tvSeries,Star Wars: The Bad Batch
+29,star wars: the clone wars,1,7.4,67304,2008,"Action,Adventure,Animation",tt0458290,tvSeries,Star Wars: The Clone Wars
+30,star wars: the clone wars,2,7.7,54961,2009,"Action,Adventure,Animation",tt0458290,tvSeries,Star Wars: The Clone Wars
+31,star wars: the clone wars,3,7.9,55449,2010,"Action,Adventure,Animation",tt0458290,tvSeries,Star Wars: The Clone Wars
+32,star wars: the clone wars,4,8,52562,2011,"Action,Adventure,Animation",tt0458290,tvSeries,Star Wars: The Clone Wars
+33,star wars: the clone wars,5,8.3,51784,2012,"Action,Adventure,Animation",tt0458290,tvSeries,Star Wars: The Clone Wars
+34,star wars: the clone wars,6,8.1,29293,2014,"Action,Adventure,Animation",tt0458290,tvSeries,Star Wars: The Clone Wars
+35,star wars: the clone wars,7,8.9,73991,2020,"Action,Adventure,Animation",tt0458290,tvSeries,Star Wars: The Clone Wars
+36,the book of boba fett,1,7.2,178760,2021,"Action,Adventure,Sci-Fi",tt13668894,tvSeries,The Book of Boba Fett
+37,the mandalorian,1,8.5,233000,2019,"Action,Adventure,Fantasy",tt8111088,tvSeries,The Mandalorian
+38,the mandalorian,2,9,248000,2020,"Action,Adventure,Fantasy",tt8111088,tvSeries,The Mandalorian
+39,the mandalorian,3,7.7,137000,2023,"Action,Adventure,Fantasy",tt8111088,tvSeries,The Mandalorian
