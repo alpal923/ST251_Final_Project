@@ -14,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 #tinytex::install_tinytex()
 
 library(tinytex)
+library(tidyverse)
+library(vroom)
 
 
 #Finally, you may also want to change your working directory here using: setwd(filepath) #default is to use the directory where this file is stored.  If you use the default, you will want to put the two data files in the same folder as this Rmd file.
@@ -29,14 +31,20 @@ hist(mysamp)
 Here you can type any text you might want to include, like a comment about the graph or something.  
 
 
-1b. In this problem, download the Rdata file provided at https://byu.box.com/v/PracticeRdataFile. Read in the downloaded Rdata file ('PracticeRmdRdata.Rdata') and compute the mean of the variable called 'x'.
+1b. Read in data and compute the mean of the variable called ''.
 ```{r answer1b}
-#Include your code for answer 1b here. 
-#If you have a mac/linux, uncomment the line below and change "filepath" appropriately: 
-load('PracticeRmdRdata.Rdata')
-#If you have a pc, uncomment the line below: 
-#load('C:\\filepath\\PracticeRmdRdata.Rdata')
-mean(x)
+
+# Read in data
+star_wars_raw <- read_excel("StarWarsRatingsIMDB.xlsx")
+# view(star_wars_main)
+
+star_wars_clean <- star_wars_raw[!is.na(star_wars_raw$AverageRating), ]
+# rownames(star_wars_clean) <- NULL
+# view(star_wars_clean)
+
+# Mean avg rating
+mean(star_wars_clean$AverageRating)
+
 ```
 Here you can type text about the code or output above, for example, the mean of 'x' is `r mean(x)`.
 
