@@ -6,36 +6,16 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-#these are default options so that by default, your pdf will include the code from your code chunks
-knitr::opts_chunk$set(echo = TRUE)
-
-#You will also want to load any external libraries you'll be using, e.g., ggplot, in your document here (you can load them at anytime, but it's good practice to load them at the beginning)
-#run the line below just once: 
-#tinytex::install_tinytex()
-
 library(tinytex)
 library(tidyverse)
 library(vroom)
-
-
-#Finally, you may also want to change your working directory here using: setwd(filepath) #default is to use the directory where this file is stored.  If you use the default, you will want to put the two data files in the same folder as this Rmd file.
+library(invgamma)
+library(readxl)
 ```
 
-1a. In this problem, draw a random vector of size 100 from a $\mbox{Bin}(n = 20, \theta = 0.4)$ and make a histogram of the vector.  
-```{r answer1a}
-#Include your code for answer 1a here.  
-mysamp <- rbinom(100, size=20, prob=0.4)
-hist(mysamp)
-```
-
-Here you can type any text you might want to include, like a comment about the graph or something.  
-
-
-1b. Read in data and compute the mean of the variable called ''.
 ```{r answer1b}
-
 # Read in data
-star_wars_raw <- read_excel("StarWarsRatingsIMDB.xlsx")
+star_wars_raw <- read.csv("cleaned_SW_ratings.csv")
 # view(star_wars_main)
 
 star_wars_clean <- star_wars_raw[!is.na(star_wars_raw$AverageRating), ]
@@ -44,23 +24,35 @@ star_wars_clean <- star_wars_raw[!is.na(star_wars_raw$AverageRating), ]
 
 # Mean avg rating
 mean(star_wars_clean$AverageRating)
-
 ```
-Here you can type text about the code or output above, for example, the mean of 'x' is `r mean(x)`.
 
+```{r answer1a}
+# PRIOR PARAMETERS: We'll use the same prior for both populations
+# How would I change the code to allow for different priors for the two populations?
+# Prior parameters for mu: 
+lambda <- 8 # Bestsellers will have higher reviews
+tau2 <- 20 # leave room for uncertainty
+# Prior parameters for sigma2: 
+# possible range for reviews is ~1-10, 
+# then an approximate standard deviation would be 9/12
+# so an approximate variance would be 0.4444
+gamma <- 2.01
+phi <- 0.666666
+#prior expected value of variance: 
+phi/(gamma-1)
+```
 
-1c. In this problem, download the csv file provided at https://byu.box.com/v/PracticeCSVfile.  Read the downloaded csv file ('PracticeRmdCSV.csv') and compute the standard deviation of the variable called 'y'.
 ```{r answer1c}
-#Include your code for answer 1c here.  
-dat <- read.csv('PracticeRmdCSV.csv', header=T) #adjust to accommodate your OS and filepath
-sd(dat$y)
+# Plot the prior distributions to make sure they seem reasonable
+par(mfrow=c(1,2))
+curve(dnorm(x, lambda, sqrt(tau2)), xlim=c(-5, 25), ylab="prior density", main=expression(pi(mu)), xlab=expression(mu))
+curve(dinvgamma(x, gamma, phi), xlim=c(0, 3), ylab="prior density", main=expression(pi(sigma^2)), xlab=expression(sigma^2))
 ```
-Here you can type text for your answer to 1c, such as, the standard deviation of y is `r sd(dat$y)`.
+
+Disney acquisition was end of 2012, so everything prior to and in the year of 2012 will be LucasFilm and 2013 and after will be Disney.
+```{r}
+data_before_2013 <- filter(star_wars_clean, startYear < 2013)
+data_2013_and_after <- filter(star_wars_clean, startYear >= 2013)
+```
 
 
-2. Here is a list of some common tex notation we will use in this class: 
-  - $X|\theta \sim \mbox{Bin}(n, \theta)$
-  - $\theta | \mbox{data} \sim \mbox{Beta}(80, 36.4)$
-  - $E(\theta | X ) = 2.5$
-  - Some common Greek letters: $\alpha$, $\beta$, $\gamma$, $\phi$, $\pi$, $\lambda$, $\theta$, $\mu$, $\sigma$
-  - Subscript and superscript: $\mu_X$ and $\sigma_X^2$
