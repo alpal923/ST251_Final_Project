@@ -28,10 +28,10 @@ mean(star_wars_clean$AverageRating)
 
 ```{r answer1a}
 # PRIOR PARAMETERS: We'll use the same prior for both populations
-# How would I change the code to allow for different priors for the two populations?
+
 # Prior parameters for mu: 
-lambda <- 8 # Bestsellers will have higher reviews
-tau2 <- 20 # leave room for uncertainty
+lambda <- 8
+tau2 <- 20
 # Prior parameters for sigma2: 
 # possible range for reviews is ~1-10, 
 # then an approximate standard deviation would be 9/12
@@ -49,10 +49,97 @@ curve(dnorm(x, lambda, sqrt(tau2)), xlim=c(-5, 25), ylab="prior density", main=e
 curve(dinvgamma(x, gamma, phi), xlim=c(0, 3), ylab="prior density", main=expression(pi(sigma^2)), xlab=expression(sigma^2))
 ```
 
-Disney acquisition was end of 2012, so everything prior to and in the year of 2012 will be LucasFilm and 2013 and after will be Disney.
+Disney acquisition was end of 2012, so everything prior to and in the year of 2012 will be LucasFilm and 2013 and after will be Disney:
 ```{r}
 data_before_2013 <- filter(star_wars_clean, startYear < 2013)
 data_2013_and_after <- filter(star_wars_clean, startYear >= 2013)
 ```
+
+```{r}
+
+mean(data_before_2013$AverageRating)
+var(data_before_2013$AverageRating)
+
+```
+
+
+```{r}
+
+### LucasFilm:
+
+n <- length(data_before_2013)
+
+#############################################
+# POSTERIOR DISTRIBUTIONS: use Gibbs Sampling
+#############################################
+# Starting values:
+mu <- mean(data_before_2013$AverageRating)
+sigma2 <- var(data_before_2013$AverageRating)
+
+# initializations for the Gibbs Sampling Algorithm
+iters <- 1000
+mu.save <- rep(0, iters)
+mu.save[1] <- mu
+sigma2.save <- rep(0, iters)
+sigma2.save[1] <- sigma2
+
+#Gibbs Sampling Algorithm
+for(t in 2:iters){
+  
+  # Full conditional of mu (update the value of the parameters)
+  lambda.p <- (tau2*sum(data_before_2013$AverageRating) + sigma2*lambda)/(tau2*n + sigma2)
+  tau2.p <- sigma2*tau2/(tau2*n + sigma2)
+  
+  #sample a new value of mu
+  mu <- rnorm(1, lambda.p, sqrt(tau2.p))
+  
+  #save the value of mu
+  mu.save[t] <- mu
+  
+  # full conditional of sigma2 (update the value of the parameters)
+  gamma.p <- gamma + n/2
+  phi.p <- phi + sum((data_before_2013$AverageRating - mu)^2 )/2
+  
+  #sample new value of sigma2
+  sigma2 <- rinvgamma(1, gamma.p, phi.p)
+  
+  #save the value of sigma2
+  sigma2.save[t] <- sigma2
+  
+}
+
+# Trace plots (decide if we need to throw out the first few values):
+par(mfrow=c(1,2))
+plot(mu.save, type='l')
+plot(sigma2.save, type='l')
+
+
+#throw out the first few values
+burn <- 100
+mu.use <- mu.save[-(1:burn)]
+sigma2.use <- sigma2.save[-(1:burn)]
+plot(mu.use, type='l')
+plot(sigma2.use, type='l')
+
+#SUMMARIZE THE POSTERIOR DISTRIBUTION(S)
+# posterior distribution of mu 
+#plot 
+plot(density(mu.use), xlab=expression(mu[W]), ylab="density", main=expression(pi(mu[L]~"|"~data)))
+# #add prior
+# curve(dnorm(x, lambda, sqrt(tau2)), lty=2, add=T)
+#add legend
+# legend("topright", c("Posterior"))
+
+# posterior distribution of sigma2
+par(mfrow=c(1,1))
+plot(density(sigma2.use), xlab=expression(sigma[L]^2), main=expression(pi(sigma[L]^2~"|"~data)))
+# #add prior
+# curve(dinvgamma(x, gamma, phi), add=T, lty=2, xlim=c(0, 1))
+#add legend
+# legend("topright", c("Posterior"))
+
+```
+
+
 
 
