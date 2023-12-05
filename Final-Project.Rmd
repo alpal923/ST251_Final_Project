@@ -37,7 +37,7 @@ tau2 <- 20 # leave room for uncertainty
 # then an approximate standard deviation would be 9/12
 # so an approximate variance would be 0.4444
 gamma <- 2.01
-phi <- 0.666666
+phi <- .666
 #prior expected value of variance: 
 phi/(gamma-1)
 ```
