@@ -82,7 +82,7 @@ mu <- mean(data_before_2013$AverageRating)
 sigma2 <- var(data_before_2013$AverageRating)
 
 # initializations for the Gibbs Sampling Algorithm
-iters <- 1000
+iters <- 10000
 mu.save <- rep(0, iters)
 mu.save[1] <- mu
 sigma2.save <- rep(0, iters)
@@ -110,7 +110,7 @@ for(t in 2:iters){
 }
 
 # Trace plots (decide if we need to throw out the first few values):
-par(mfrow=c(1,2))
+# par(mfrow=c(1,2))
 plot(mu.save, type='l')
 plot(sigma2.save, type='l')
 
@@ -155,7 +155,7 @@ mu <- mean(data_2013_and_after$AverageRating)
 sigma2 <- var(data_2013_and_after$AverageRating)
 
 # initializations for the Gibbs Sampling Algorithm
-iters <- 1000
+iters <- 10000
 mu.save <- rep(0, iters)
 mu.save[1] <- mu
 sigma2.save <- rep(0, iters)
@@ -183,13 +183,13 @@ for(t in 2:iters){
 }
 
 # Trace plots (decide if we need to throw out the first few values):
-par(mfrow=c(1,2))
+# par(mfrow=c(1,2))
 plot(mu.save, type='l')
 plot(sigma2.save, type='l')
 
 
 #throw out the first few values
-burn <- 100
+burn <- 150
 mu.use <- mu.save[-(1:burn)]
 sigma2.use <- sigma2.save[-(1:burn)]
 plot(mu.use, type='l')
