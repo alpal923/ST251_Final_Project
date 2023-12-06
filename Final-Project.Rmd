@@ -130,6 +130,9 @@ plot(density(mu.use), xlab=expression(mu[L]), ylab="density", main=expression(pi
 # curve(dnorm(x, lambda, sqrt(tau2)), lty=2, add=T)
 #add legend
 # legend("topright", c("Posterior"))
+mean(mu.use)
+
+muL.use <- mu.use
 
 # posterior distribution of sigma2
 par(mfrow=c(1,1))
@@ -138,6 +141,9 @@ plot(density(sigma2.use), xlab=expression(sigma[L]^2), main=expression(pi(sigma[
 # curve(dinvgamma(x, gamma, phi), add=T, lty=2, xlim=c(0, 1))
 #add legend
 # legend("topright", c("Posterior"))
+mean(sigma2.use)
+
+sigma2L.use <- sigma2.use
 
 ```
 
@@ -203,6 +209,9 @@ plot(density(mu.use), xlab=expression(mu[D]), ylab="density", main=expression(pi
 # curve(dnorm(x, lambda, sqrt(tau2)), lty=2, add=T)
 #add legend
 # legend("topright", c("Posterior"))
+mean(mu.use)
+
+muD.use <- mu.use
 
 # posterior distribution of sigma2
 par(mfrow=c(1,1))
@@ -211,6 +220,28 @@ plot(density(sigma2.use), xlab=expression(sigma[D]^2), main=expression(pi(sigma[
 # curve(dinvgamma(x, gamma, phi), add=T, lty=2, xlim=c(0, 1))
 #add legend
 # legend("topright", c("Posterior"))
+mean(sigma2.use)
+
+sigma2D.use <- sigma2.use
+
+```
+
+```{r}
+
+### Difference in means for Disney and LucasFilms
+
+#Compare mu.D to mu.L
+mean(muD.use > muL.use)
+#Given our data and prior knowledge, there is about a 30% chance that 
+#NYTimes Bestseller fiction books have a higher goodreads rating than nonfiction books
+
+# Credible interval
+diff <- muD.use - muL.use
+plot(density(diff), xlab=expression(mu[D]-mu[L]), main="Posterior of Average Rating Disney vs LucasFilm")
+abline(v=0, lty=2)
+
+quantile(diff, c(.025, .975))
+
 
 ```
 
