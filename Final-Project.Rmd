@@ -37,7 +37,7 @@ tau2 <- 20
 # then an approximate standard deviation would be 9/12
 # so an approximate variance would be 0.4444
 gamma <- 2.01
-phi <- .666
+phi <- 0.666666
 #prior expected value of variance: 
 phi/(gamma-1)
 ```
@@ -232,8 +232,8 @@ sigma2D.use <- sigma2.use
 
 #Compare mu.D to mu.L
 mean(muD.use > muL.use)
-#Given our data and prior knowledge, there is about a 30% chance that 
-#NYTimes Bestseller fiction books have a higher goodreads rating than nonfiction books
+#Given our data and prior knowledge, there is about a 85.3% chance that
+#the average rating for Disney is greater than that of Lucasfilms
 
 # Credible interval
 diff <- muD.use - muL.use
@@ -245,5 +245,22 @@ quantile(diff, c(.025, .975))
 
 ```
 
+```{r}
+
+### Difference in var for Disney and LucasFilms
+
+#Compare mu.D to mu.L
+mean(sigma2D.use > sigma2L.use)
+#Given our data and prior knowledge, there is about a 0.05%
+#chance that the variance of Disney is greater than that of Lucasfilms
+
+# Credible interval
+diff <- sigma2D.use - sigma2L.use
+plot(density(diff), xlab=expression(sigma[D]^2-sigma[L]^2), main="Posterior of Variance of Ratings, Disney vs LucasFilm")
+abline(v=0, lty=2)
+
+quantile(diff, c(.025, .975))
+
+```
 
 
