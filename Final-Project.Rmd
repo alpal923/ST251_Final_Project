@@ -52,10 +52,30 @@ curve(dinvgamma(x, gamma, phi), xlim=c(0, 3), ylab="prior density", main=express
 Disney acquisition was end of 2012, so everything prior to and in the year of 2012 will be LucasFilm and 2013 and after will be Disney:
 ```{r}
 data_before_2013 <- filter(star_wars_clean, startYear < 2013)
-view(data_before_2013)
+# view(data_before_2013)
 
 data_2013_and_after <- filter(star_wars_clean, startYear >= 2013)
 ```
+
+```{r}
+
+# Explore data
+
+hist(data_before_2013$AverageRating)
+hist(data_2013_and_after$AverageRating)
+
+#qq plot to check for normality 
+#(not great but not too bad for only 15 observations)
+qqnorm(data_before_2013$AverageRating)
+qqline(data_before_2013$AverageRating)
+qqnorm(data_2013_and_after$AverageRating)
+qqline(data_2013_and_after$AverageRating)
+
+# Not bad for as few observations as we have
+
+
+```
+
 
 ```{r}
 
@@ -73,6 +93,8 @@ var(data_2013_and_after$AverageRating)
 ### LucasFilm:
 
 n <- nrow(data_before_2013)
+
+set.seed(1207)
 
 #############################################
 # POSTERIOR DISTRIBUTIONS: use Gibbs Sampling
@@ -152,6 +174,8 @@ sigma2L.use <- sigma2.use
 ### Disney:
 
 n <- nrow(data_2013_and_after)
+
+set.seed(1207)
 
 #############################################
 # POSTERIOR DISTRIBUTIONS: use Gibbs Sampling
@@ -237,7 +261,7 @@ mean(muD.use > muL.use)
 
 # Credible interval
 diff <- muD.use - muL.use
-plot(density(diff), xlab=expression(mu[D]-mu[L]), main="Posterior of Average Rating Disney vs LucasFilm")
+plot(density(diff), xlab=expression(mu[D]-mu[L]), main="Difference of Average Rating Disney vs LucasFilm")
 abline(v=0, lty=2)
 
 quantile(diff, c(.025, .975))
@@ -256,11 +280,10 @@ mean(sigma2D.use > sigma2L.use)
 
 # Credible interval
 diff <- sigma2D.use - sigma2L.use
-plot(density(diff), xlab=expression(sigma[D]^2-sigma[L]^2), main="Posterior of Variance of Ratings, Disney vs LucasFilm")
+plot(density(diff), xlab=expression(sigma[D]^2-sigma[L]^2), main="Difference of Variance of Ratings, Disney vs LucasFilm")
 abline(v=0, lty=2)
 
 quantile(diff, c(.025, .975))
 
 ```
-
 
