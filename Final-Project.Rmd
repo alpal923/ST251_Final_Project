@@ -232,8 +232,6 @@ sigma2D.use <- sigma2.use
 
 #Compare mu.D to mu.L
 mean(muD.use > muL.use)
-#Given our data and prior knowledge, there is about a 30% chance that 
-#NYTimes Bestseller fiction books have a higher goodreads rating than nonfiction books
 
 # Credible interval
 diff <- muD.use - muL.use
