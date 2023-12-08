@@ -1,0 +1,154 @@
+---
+title: 'Lucasfilm vs. Disney: Who Did Star Wars Better?'
+author: "Aaron Brown, Aly Milne, and andrew Bargeron"
+date: "2023-12-08"
+output: pdf_document
+---
+
+## Introduction
+Who shot first, Han or Greedo? Which is better, the Prequels or the Sequels? Obviously, there are plenty of controversies relating to the Star Wars franchise within its community of fans. However, amongst all these debates, we aim to answer the most disputed and relevant issue at this time, which is whether Star Wars has improved since Disney acquired it from Lucasfilm. We look to explore the differences in the movies and show ratings of the Star Wars franchise before and after the ownership was passed on to Disney. We will divide the data into sub-populations: one being all the films and shows released prior to 2013, and the other being all movies and shows from 2013 onwards. We will look at the mean and variance of the two sub-populations. The parameters we are most interested in are the mean ratings of movies and shows while the franchise was still under the influence of George Lucas’ creative mind and Lucasfilm, denoted as $\mu_L$, the mean ratings of movies and shows after Disney became the new owner, denoted as $\mu_D$, their standard deviations, and the difference parameter.
+
+## Methods
+We found most of the data already pulled from IMDb on data.world. However, some of the newer shows (Ahoksa, Book od Boba Fett) were not included, so we added those manually by checking the ratings for each episode, weighting them by the number of reviews, and aggregating to the total average rating for the season. We also aggregated the episodes in the pre-pulled dataset up to their seasons as well (for TV series). Lastly, we updated the years for each season as they were left as the total range of the entire series (ex. Clone Wars was startYear=2008 and endYear=2020 across all seasons).
+After bringing the cleaned data into R and splitting it by years (LucasFilm is up to 2012, Disney is 2013 and beyond), we constructed histograms and Q-Q plots of the data to confirm normality. While the histogram of pre-2013 (LucasFilm) was a little bimodal, the Q-Q plot ensured reasonable normality. Both histogram and Q-Q plot for post-2012 (Disney) confirmed normality as good as we could expect for a small dataset.
+```{r, include=FALSE, echo=FALSE}
+library(tinytex)
+library(tidyverse)
+library(vroom)
+library(invgamma)
+library(readxl)
+# Read in data
+star_wars_raw <- read.csv("cleaned_SW_ratings.csv")
+star_wars_clean <- star_wars_raw[!is.na(star_wars_raw$AverageRating), ]
+# Prior parameters for mu (both populations): 
+lambda <- 8
+tau2 <- 20
+# Prior parameters for sigma2: 
+# possible range for reviews is ~1-10, 
+# then an approximate standard deviation would be 9/12
+gamma <- 2.01
+phi <- 0.666666
+```
+
+We used the Normal distribution for our likelihood because the average ratings are continuous and roughly normally distributed. We used the Normal distribution for the prior of the average ratings and Inverse Gamma distribution for the prior of variance in those ratings. Normal was appropriate since we expected the quality would be consistent and centered around a specific value for both groups. Inverse gamma was appropriate because it is the conjugate prior and it handles the positive-only nature of variance well.
+For our priors on the mean for both datasets, we used $\lambda$=8 and $\tau^2$=20 for a Normal distribution, both twice the priors from our Goodreads activity since these ratings were on a scale twice as large (1-5 vs. 1-10). We selected a large value for $\tau^2$ since there is a fair amount of uncertainty in this data. Additionally, we used in inverse gamma distribution with $\gamma$=2.01 and $\phi$=0.66 as the priors for both datasets to model variance. Thus, for the two populations (LucasFIlm and Disney), we have unknown parameters $\mu$ (average rating) and $\sigma^2$ (variance of the ratings).
+```{r prior_distribution_graphed, figures-side}
+# Plot the prior distributions to make sure they seem reasonable
+par(mfrow=c(1,2))
+curve(dnorm(x, lambda, sqrt(tau2)), xlim=c(-5, 25), ylab="prior density", main=expression(pi(mu)), xlab=expression(mu))
+curve(dinvgamma(x, gamma, phi), xlim=c(0, 3), ylab="prior density", main=expression(pi(sigma^2)), xlab=expression(sigma^2))
+```
+
+We used Gibbs sampling to estimate the posterior distributions of the mean and variance of both groups. We initialized with the sample mean and variance, then iteratively updated these parameters for 10,000 iterations. We specifically sampled new values for the mean and variance in each iteration based on their respective full conditional distributions, progressively refining these estimates to reflect the underlying data distribution.
+
+```{r, include=FALSE, echo=FALSE}
+data_before_2013 <- filter(star_wars_clean, startYear < 2013)
+data_2013_and_after <- filter(star_wars_clean, startYear >= 2013)
+
+### LucasFilm:
+n <- nrow(data_before_2013)
+set.seed(1207)
+#############################################
+# POSTERIOR DISTRIBUTIONS: use Gibbs Sampling
+#############################################
+# Starting values:
+mu <- mean(data_before_2013$AverageRating)
+sigma2 <- var(data_before_2013$AverageRating)
+# initializations for the Gibbs Sampling Algorithm
+iters <- 10000
+mu.save <- rep(0, iters)
+mu.save[1] <- mu
+sigma2.save <- rep(0, iters)
+sigma2.save[1] <- sigma2
+#Gibbs Sampling Algorithm
+for(t in 2:iters){
+  
+  # Full conditional of mu (update the value of the parameters)
+  lambda.p <- (tau2*sum(data_before_2013$AverageRating) + sigma2*lambda)/(tau2*n + sigma2)
+  tau2.p <- sigma2*tau2/(tau2*n + sigma2)
+  #sample a new value of mu
+  mu <- rnorm(1, lambda.p, sqrt(tau2.p))
+  #save the value of mu
+  mu.save[t] <- mu
+  
+  # full conditional of sigma2 (update the value of the parameters)
+  gamma.p <- gamma + n/2
+  phi.p <- phi + sum((data_before_2013$AverageRating - mu)^2 )/2
+  #sample new value of sigma2
+  sigma2 <- rinvgamma(1, gamma.p, phi.p)
+  #save the value of sigma2
+  sigma2.save[t] <- sigma2
+  
+}
+#throw out the first few values
+burn <- 100
+mu.use <- mu.save[-(1:burn)]
+sigma2.use <- sigma2.save[-(1:burn)]
+mean_mu_use_l <- mean(mu.use)
+muL.use <- mu.use
+mean_sigma_use_l <- mean(sigma2.use)
+sigma2L.use <- sigma2.use
+
+### Disney:
+
+n <- nrow(data_2013_and_after)
+
+set.seed(1207)
+
+#############################################
+# POSTERIOR DISTRIBUTIONS: use Gibbs Sampling
+#############################################
+# Starting values:
+mu <- mean(data_2013_and_after$AverageRating)
+sigma2 <- var(data_2013_and_after$AverageRating)
+
+# initializations for the Gibbs Sampling Algorithm
+iters <- 10000
+mu.save <- rep(0, iters)
+mu.save[1] <- mu
+sigma2.save <- rep(0, iters)
+sigma2.save[1] <- sigma2
+
+#Gibbs Sampling Algorithm
+for(t in 2:iters){
+  
+  # Full conditional of mu (update the value of the parameters)
+  lambda.p <- (tau2*sum(data_2013_and_after$AverageRating) + sigma2*lambda)/(tau2*n + sigma2)
+  tau2.p <- sigma2*tau2/(tau2*n + sigma2)
+  #sample a new value of mu
+  mu <- rnorm(1, lambda.p, sqrt(tau2.p))
+  #save the value of mu
+  mu.save[t] <- mu
+  
+  # full conditional of sigma2 (update the value of the parameters)
+  gamma.p <- gamma + n/2
+  phi.p <- phi + sum((data_2013_and_after$AverageRating - mu)^2 )/2
+  #sample new value of sigma2
+  sigma2 <- rinvgamma(1, gamma.p, phi.p)
+  #save the value of sigma2
+  sigma2.save[t] <- sigma2
+  
+}
+#throw out the first few values
+burn <- 150
+mu.use <- mu.save[-(1:burn)]
+sigma2.use <- sigma2.save[-(1:burn)]
+mean_mu_use_d <- mean(mu.use)
+muD.use <- mu.use
+mean_sigma_use_d <- mean(sigma2.use)
+sigma2D.use <- sigma2.use
+```
+
+## Results
+The average rating for LucasFilm content was 7.3326 and the variance was 2.2514.
+```{r post_lucas, figures-side, echo=FALSE}
+plot(density(muL.use), xlab=expression(mu[L]), ylab="density", main=expression(pi(mu[L]~"|"~data)))
+plot(density(sigma2L.use), xlab=expression(sigma[L]^2), main=expression(pi(sigma[L]^2~"|"~data)))
+```
+
+For Disney, these values were 7.7391 and 0.5629.
+```{r post_disney, figures-side, echo=FALSE}
+plot(density(muD.use), xlab=expression(mu[D]), ylab="density", main=expression(pi(mu[D]~"|"~data)))
+plot(density(sigma2D.use), xlab=expression(sigma[D]^2), main=expression(pi(sigma[D]^2~"|"~data)))
+```
+
