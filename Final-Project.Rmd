@@ -35,14 +35,13 @@ tau2 <- 20
 # Prior parameters for sigma2: 
 # possible range for reviews is ~1-10, 
 # then an approximate standard deviation would be 9/12
-# so an approximate variance would be 0.4444
 gamma <- 2.01
 phi <- 0.666666
 #prior expected value of variance: 
 phi/(gamma-1)
 ```
 
-```{r answer1c}
+```{r answer1c, figures-side}
 # Plot the prior distributions to make sure they seem reasonable
 par(mfrow=c(1,2))
 curve(dnorm(x, lambda, sqrt(tau2)), xlim=c(-5, 25), ylab="prior density", main=expression(pi(mu)), xlab=expression(mu))
@@ -57,34 +56,31 @@ data_before_2013 <- filter(star_wars_clean, startYear < 2013)
 data_2013_and_after <- filter(star_wars_clean, startYear >= 2013)
 ```
 
-```{r}
+```{r, figures-side}
 
 # Explore data
 
-hist(data_before_2013$AverageRating)
-hist(data_2013_and_after$AverageRating)
+hist(data_before_2013$AverageRating, xlim=c(0,10), breaks=c(1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10), xlab=c("Ratings"), ylab=c("Frequency"), main=c("Histogram of Ratings During LucasFilm Era"))
 
 #qq plot to check for normality 
-#(not great but not too bad for only 15 observations)
 qqnorm(data_before_2013$AverageRating)
 qqline(data_before_2013$AverageRating)
-qqnorm(data_2013_and_after$AverageRating)
-qqline(data_2013_and_after$AverageRating)
 
 # Not bad for as few observations as we have
+```
+```{r, figures-side}
+hist(data_2013_and_after$AverageRating, xlim=c(0,10), breaks=c(1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10))
 
-
+qqnorm(data_2013_and_after$AverageRating)
+qqline(data_2013_and_after$AverageRating)
 ```
 
-
 ```{r}
-
 mean(data_before_2013$AverageRating)
 var(data_before_2013$AverageRating)
 
 mean(data_2013_and_after$AverageRating)
 var(data_2013_and_after$AverageRating)
-
 ```
 
 
