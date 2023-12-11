@@ -10,7 +10,7 @@ Who shot first, Han or Greedo? Which is better, the Prequels or the Sequels? Obv
 We will divide the data into sub-populations: one being all the films and shows released prior to 2013, and the other being all movies and shows from 2013 onwards. We will look at the mean and variance of the two sub-populations. The parameters we are most interested in are the mean ratings of movies and shows while the franchise was still under the influence of George Lucas’ creative mind and Lucasfilm, denoted as $\mu_L$, the mean ratings of movies and shows after Disney became the new owner, denoted as $\mu_D$, their standard deviations, and the difference parameter.
 
 ## Methods
-We found most of the data already pulled from IMDb on data.world. However, some of the newer shows (Ahoksa, Book of Boba Fett) were not included, so we added those manually by checking the ratings for each episode, weighting them by the number of reviews, and aggregating to the total average rating for the season. We also aggregated the episodes in the pre-pulled dataset up to their seasons as well (for TV series). Lastly, we updated the years for each season as they were left as the total range of the entire series (ex. Clone Wars was startYear=2008 and endYear=2020 across all seasons).
+We found most of the data already pulled from IMDb on data.world. However, some of the newer shows (Ahsoka, Book of Boba Fett) were not included, so we added those manually by checking the ratings for each episode, weighting them by the number of reviews, and aggregating to the total average rating for the season. We also aggregated the episodes in the pre-pulled dataset up to their seasons as well (for TV series). Lastly, we updated the years for each season as they were left as the total range of the entire series (ex. Clone Wars was startYear=2008 and endYear=2020 across all seasons).
 After bringing the cleaned data into R and splitting it by years (LucasFilm is up to 2012, Disney is 2013 and beyond), we constructed histograms and Q-Q plots of the data to confirm normality. While the histogram of pre-2013 (LucasFilm) was a little bimodal, the Q-Q plot ensured reasonable normality. Both histogram and Q-Q plot for post-2012 (Disney) confirmed normality as good as we could expect for a small dataset.
 ```{r, include=FALSE, echo=FALSE}
 library(tinytex)
@@ -31,8 +31,8 @@ gamma <- 2.01
 phi <- 0.666666
 ```
 
-We used the Normal distribution for our likelihood because the average ratings are continuous and roughly normally distributed. We used the Normal distribution for the prior of the average ratings and Inverse Gamma distribution for the prior of variance in those ratings. Normal was appropriate since we expected the quality would be consistent and centered around a specific value for both groups. Inverse gamma was appropriate because it is the conjugate prior and it handles the positive-only nature of variance well.
-For our priors on the mean for both datasets, we used $\lambda$=8 and $\tau^2$=20 for a Normal distribution, both twice the priors from our Goodreads activity since these ratings were on a scale twice as large (1-5 vs. 1-10). We selected a large value for $\tau^2$ since there is a fair amount of uncertainty in this data. Additionally, we used in inverse gamma distribution with $\gamma$=2.01 and $\phi$=0.66 as the priors for both datasets to model variance. Thus, for the two populations (LucasFIlm and Disney), we have unknown parameters $\mu$ (average rating) and $\sigma^2$ (variance of the ratings).
+We used the Normal distribution for our likelihood because the average ratings are continuous and roughly normally distributed. We used the Normal distribution for the prior of the average ratings and Inverse Gamma distribution for the prior of variance in those ratings. Normal was appropriate since we expected the quality would be symmetric and centered around a specific value for both groups. Inverse gamma was appropriate because it handles the positive-only nature of variance well, and it is typically used to determine the distribution of the variance in conjunction with a normal used to determine the distribution of the mean.
+For our priors on the mean for both datasets, we used $\lambda$=8 and $\tau^2$=20 for a Normal distribution. The $\lambda$'s for the means are both twice as much as the $\lambda$'s from our Goodreads activity since these ratings were on a scale twice as large (1-5 vs. 1-10). We also selected a large value for $\tau^2$ since there is a fair amount of uncertainty in this data. Additionally, we used an inverse gamma distribution with $\gamma$=2.01 and $\phi$=0.66 as the priors for both datasets to model variance with plenty of uncertainty. Thus, for the two populations (LucasFIlm and Disney), we have unknown parameters $\mu$ (average rating) and $\sigma^2$ (variance of the ratings).
 ```{r prior_distribution_graphed, echo=FALSE, fig.height=3, fig.width=7}
 # Plot the prior distributions to make sure they seem reasonable
 par(mfrow=c(1,2))
@@ -141,22 +141,73 @@ mean_sigma_use_d <- mean(sigma2.use)
 sigma2D.use <- sigma2.use
 ```
 
-## Results
-The average rating for LucasFilm content was 7.3326 and the variance was 2.2514.
+```{r, include=FALSE, echo=FALSE}
 
-```{r post_lucas, echo=FALSE, fig.height=3, fig.width=7, include=FALSE}
+# Lucasfilms and Disney Confidence Intervals:
+
+# Lucasfilms' mu:
+quantile(muL.use, c(.025, .975))
+# Lucasfilms' var:
+quantile(sigma2L.use, c(.025, .975))
+
+# Disney's mu:
+quantile(muD.use, c(.025, .975))
+# Lucasfilms' var:
+quantile(sigma2D.use, c(.025, .975))
+
+```
+
+
+## Results
+Given our data and prior knowledge, the expected $\mu_L$, or average rating for LucasFilm content, is 7.3326 and the expected $\sigma_L^2$, or variance, is 2.2514.
+Also given our data and prior knowledge, there is a 95% probability that LucasFilms' content average ratings are between 6.6059 and 8.0545 out of 10, and there is a 95% probability that the variance is between 1.1860 and 4.2154.
+
+```{r post_lucas, echo=FALSE, fig.height=3, fig.width=7, include=TRUE, warning=FALSE}
 par(mfrow = c(1, 2))
 plot(density(muL.use), xlab=expression(mu[L]), ylab="density", main=expression(pi(mu[L]~"|"~data)))
 plot(density(sigma2L.use), xlab=expression(sigma[L]^2), main=expression(pi(sigma[L]^2~"|"~data)))
 par(mfrow = c(1, 1))
 ```
 
-For Disney, these values were 7.7391 and 0.5629.
+Given our data and prior knowledge, the expected $\mu_D$, or average rating for Disney content, is 7.7391 and the expected $\sigma_D^2$, or variance, is 0.5629.
+Also given our data and prior knowledge, there is a 95% probability that Disney's content average ratings are between 7.4173 and 8.0552 out of 10, and there is a 95% probability that the variance is between 0.3198 and 0.9857.
 
-```{r post_disney, echo=FALSE, fig.height=3, fig.width=7, include=FALSE}
+```{r post_disney, echo=FALSE, fig.height=3, fig.width=7, include=TRUE, warning=FALSE}
 par(mfrow = c(1, 2))
 plot(density(muD.use), xlab=expression(mu[D]), ylab="density", main=expression(pi(mu[D]~"|"~data)))
 plot(density(sigma2D.use), xlab=expression(sigma[D]^2), main=expression(pi(sigma[D]^2~"|"~data)))
 par(mfrow = c(1, 1))
 ```
+
+Lastly, we determine the difference between the posterior distributions of the means of Disney and LucasFilms.
+
+```{r post diff, echo=FALSE, fig.height=4, fig.width=9, include=TRUE, warning=FALSE}
+
+### Difference in means for Disney and LucasFilms
+
+#Compare mu.D to mu.L
+# mean(muD.use > muL.use)
+
+#Given our data and prior knowledge, there is about a 85.3% chance that
+#the average rating for Disney is greater than that of Lucasfilms
+
+# Credible interval
+diff <- muD.use - muL.use
+plot(density(diff), xlab=expression(mu[D]-mu[L]), main="Difference of Average Rating Disney vs LucasFilm")
+abline(v=0, lty=2)
+
+# quantile(diff, c(.025, .975))
+
+
+```
+
+Given our data and prior knowledge, there is a 95% probability that Disney's average rating is between 0.3684 points lower and 1.1846 points higher than LucasFilms' average rating, and there is about a 85.3737% chance that the average rating for Disney content is greater than that of LucasFilms content.
+
+
+
+
+
+
+
+
 
