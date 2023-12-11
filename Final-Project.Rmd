@@ -54,6 +54,7 @@ data_before_2013 <- filter(star_wars_clean, startYear < 2013)
 # view(data_before_2013)
 
 data_2013_and_after <- filter(star_wars_clean, startYear >= 2013)
+# view(data_2013_and_after)
 ```
 
 ```{r, figures-side}
@@ -245,6 +246,24 @@ mean(sigma2.use)
 sigma2D.use <- sigma2.use
 
 ```
+
+```{r}
+
+# Lucasfilms and Disney Confidence Intervals:
+
+# Lucasfilms' mu:
+quantile(muL.use, c(.025, .975))
+# Lucasfilms' var:
+quantile(sigma2L.use, c(.025, .975))
+
+# Disney's mu:
+quantile(muD.use, c(.025, .975))
+# Lucasfilms' var:
+quantile(sigma2D.use, c(.025, .975))
+
+
+```
+
 
 ```{r}
 
