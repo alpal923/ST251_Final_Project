@@ -1,17 +1,17 @@
 ---
 title: 'Lucasfilm vs. Disney: Who Did Star Wars Better?'
-author: "Aaron Brown, Aly Milne, and andrew Bargeron"
+author: "Aaron Brown, Aly Milne, and Andrew Bargeron"
 date: "2023-12-08"
 output: pdf_document
 ---
 
 ### Introduction
-Who shot first, Han or Greedo? Which is better, the Prequels or the Sequels? Obviously, there are plenty of controversies relating to the Star Wars franchise within its community of fans. However, amongst all these debates, we aim to answer the most disputed and relevant issue at this time, which is whether Star Wars has improved since Disney acquired it from Lucasfilm. We look to explore the differences in the movies and show ratings of the Star Wars franchise before and after the ownership was passed on to Disney. 
+Who shot first, Han or Greedo? Which is better, the Prequels or the Sequels? Obviously, there is plenty of controversy relating to the Star Wars franchise within its community of fans. However, amongst all these debates, we aim to answer the most disputed and relevant issue at this time, which is whether Star Wars has improved since Disney acquired it from Lucasfilm. We look to explore the differences in the movies and show ratings of the Star Wars franchise before and after the ownership was passed on to Disney. 
 We will divide the data into sub-populations: one being all the films and shows released prior to 2013, and the other being all movies and shows from 2013 onwards. We will look at the mean and variance of the two sub-populations. The parameters we are most interested in are the mean ratings of movies and shows while the franchise was still under the influence of George Lucas’ creative mind and Lucasfilm, denoted as $\mu_L$, the mean ratings of movies and shows after Disney became the new owner, denoted as $\mu_D$, their standard deviations, and the difference parameter.
 
 ### Methods
-We found most of the data already pulled from IMDb on data.world. However, some of the newer shows (Ahsoka, Book of Boba Fett) were not included, so we added those manually by checking the ratings for each episode, weighting them by the number of reviews, and aggregating to the total average rating for the season. We also aggregated the episodes in the pre-pulled dataset up to their seasons as well (for TV series). Lastly, we updated the years for each season as they were left as the total range of the entire series (ex. Clone Wars was startYear=2008 and endYear=2020 across all seasons).
-After bringing the cleaned data into R and splitting it by years (LucasFilm is up to 2012, Disney is 2013 and beyond), we constructed histograms and Q-Q plots of the data to confirm normality. While the histogram of pre-2013 (LucasFilm) was a little bimodal, the Q-Q plot ensured reasonable normality. Both histogram and Q-Q plot for post-2012 (Disney) confirmed normality as good as we could expect for a small dataset.
+We found most of the data already pulled from IMDb on data.world. However, some of the newer shows (Ahsoka, Book of Boba Fett) were not included, so we manually added those by checking the ratings for each episode, weighting them by the number of reviews, and aggregating to the total average rating for the season. We also aggregated the episodes in the pre-pulled dataset up to their seasons as well (for TV series). Lastly, we updated the years for each season as they were left as the total range of the entire series (ex. Clone Wars was startYear=2008 and endYear=2020 across all seasons).
+After bringing the cleaned data into R and splitting it by years (Lucasfilm is up to 2012, Disney is 2013 and beyond), we constructed histograms and Q-Q plots of the data to confirm normality. While the histogram of pre-2013 (Lucasfilm) was a little bimodal, the Q-Q plot ensured reasonable normality. Both the histogram and Q-Q plot for post-2012 (Disney) confirmed normality as good as we could expect for a small dataset.
 ```{r, include=FALSE, echo=FALSE}
 library(tinytex)
 library(tidyverse)
@@ -31,8 +31,8 @@ gamma <- 2.01
 phi <- 0.666666
 ```
 
-We used the Normal distribution for our likelihood because the average ratings are continuous and roughly normally distributed. We used the Normal distribution for the prior of the average ratings and Inverse Gamma distribution for the prior of variance in those ratings. Normal was appropriate since we expected the quality would be symmetric and centered around a specific value for both groups. Inverse gamma was appropriate because it handles the positive-only nature of variance well, and it is typically used to determine the distribution of the variance in conjunction with a normal used to determine the distribution of the mean.
-For our priors on the mean for both datasets, we used $\lambda$=8 and $\tau^2$=20 for a Normal distribution. The $\lambda$'s for the means are both twice as much as the $\lambda$'s from our Goodreads activity since these ratings were on a scale twice as large (1-5 vs. 1-10). We also selected a large value for $\tau^2$ since there is a fair amount of uncertainty in this data. Additionally, we used an inverse gamma distribution with $\gamma$=2.01 and $\phi$=0.66 as the priors for both datasets to model variance with plenty of uncertainty. Thus, for the two populations (LucasFIlm and Disney), we have unknown parameters $\mu$ (average rating) and $\sigma^2$ (variance of the ratings).
+We used the Normal distribution for our likelihood because the average ratings are continuous and roughly normally distributed. We used the Normal distribution for the prior of the average ratings and Inverse Gamma distribution for the prior of the variance in those ratings. Normal was appropriate since we expected the quality would be symmetric and centered around a specific value for both groups. Inverse gamma was appropriate because it handles the positive-only nature of variance well, and it is typically used to determine the distribution of the variance in conjunction with a normal used to determine the distribution of the mean.
+For our priors on the mean for both datasets, we used $\lambda$=8 and $\tau^2$=20 for a Normal distribution. The $\lambda$'s for the means are both twice as much as the $\lambda$'s from our Goodreads activity since these ratings were on a scale twice as large (1-5 vs. 1-10). We also selected a large value for $\tau^2$ since there is a fair amount of uncertainty in this data. Additionally, we used an inverse gamma distribution with $\gamma$=2.01 and $\phi$=0.66 as the priors for both datasets to model variance with plenty of uncertainty. Thus, for the two populations (Lucasfilm and Disney), we have unknown parameters $\mu$ (average rating) and $\sigma^2$ (variance of the ratings).
 ```{r prior_distribution_graphed, echo=FALSE, fig.height=2.3, fig.width=6}
 # Plot the prior distributions to make sure they seem reasonable
 par(mfrow=c(1,2))
@@ -47,7 +47,7 @@ We used Gibbs sampling to estimate the posterior distributions of the mean and v
 data_before_2013 <- filter(star_wars_clean, startYear < 2013)
 data_2013_and_after <- filter(star_wars_clean, startYear >= 2013)
 
-### LucasFilm:
+### Lucasfilm:
 n <- nrow(data_before_2013)
 set.seed(1207)
 #############################################
@@ -143,24 +143,24 @@ sigma2D.use <- sigma2.use
 
 ```{r, include=FALSE, echo=FALSE}
 
-# Lucasfilms and Disney Confidence Intervals:
+# Lucasfilm and Disney Confidence Intervals:
 
-# Lucasfilms' mu:
+# Lucasfilm's mu:
 quantile(muL.use, c(.025, .975))
-# Lucasfilms' var:
+# Lucasfilm's var:
 quantile(sigma2L.use, c(.025, .975))
 
 # Disney's mu:
 quantile(muD.use, c(.025, .975))
-# Lucasfilms' var:
+# Lucasfilm's var:
 quantile(sigma2D.use, c(.025, .975))
 
 ```
 
 
 ### Results
-Given our data and prior knowledge, the expected $\mu_L$, or average rating for LucasFilm content, is 7.3326 and the expected $\sigma_L^2$, or variance, is 2.2514.
-Also given our data and prior knowledge, there is a 95% probability that LucasFilms' content average ratings are between 6.6059 and 8.0545 out of 10, and there is a 95% probability that the variance is between 1.1860 and 4.2154.
+Given our data and prior knowledge, the expected $\mu_L$, or average rating for Lucasfilm content, is 7.3326 and the expected $\sigma_L^2$, or variance, is 2.2514.
+Also, given our data and prior knowledge, there is a 95% probability that Lucasfilm's content average ratings are between 6.6059 and 8.0545 out of 10, and there is a 95% probability that the variance is between 1.1860 and 4.2154.
 
 ```{r post_lucas, echo=FALSE, fig.height=2.3, fig.width=6, include=TRUE, warning=FALSE}
 par(mfrow = c(1, 2))
@@ -170,7 +170,7 @@ par(mfrow = c(1, 1))
 ```
 
 Given our data and prior knowledge, the expected $\mu_D$, or average rating for Disney content, is 7.7391 and the expected $\sigma_D^2$, or variance, is 0.5629.
-Also given our data and prior knowledge, there is a 95% probability that Disney's content average ratings are between 7.4173 and 8.0552 out of 10, and there is a 95% probability that the variance is between 0.3198 and 0.9857.
+Also, given our data and prior knowledge, there is a 95% probability that Disney's content average ratings are between 7.4173 and 8.0552 out of 10, and there is a 95% probability that the variance is between 0.3198 and 0.9857.
 
 ```{r post_disney, echo=FALSE, fig.height=2.3, fig.width=6, include=TRUE, warning=FALSE}
 par(mfrow = c(1, 2))
@@ -179,21 +179,21 @@ plot(density(sigma2D.use), xlab=expression(sigma[D]^2), main=expression(pi(sigma
 par(mfrow = c(1, 1))
 ```
 
-Lastly, we determine the difference between the posterior distributions of the means of Disney and LucasFilms.
+Lastly, we determine the difference between the posterior distributions of the means of Disney and Lucasfilm.
 
 ```{r post diff, echo=FALSE, fig.height=2.8, fig.width=5, include=TRUE, warning=FALSE}
 
-### Difference in means for Disney and LucasFilms
+### Difference in means for Disney and Lucasfilm
 
 #Compare mu.D to mu.L
 # mean(muD.use > muL.use)
 
 #Given our data and prior knowledge, there is about a 85.3% chance that
-#the average rating for Disney is greater than that of Lucasfilms
+#the average rating for Disney is greater than that of Lucasfilm
 
 # Credible interval
 diff <- muD.use - muL.use
-plot(density(diff), xlab=expression(mu[D]-mu[L]), main="Difference of Average Rating Disney vs LucasFilm")
+plot(density(diff), xlab=expression(mu[D]-mu[L]), main="Difference of Average Rating Disney vs Lucasfilm")
 abline(v=0, lty=2)
 
 # quantile(diff, c(.025, .975))
@@ -201,14 +201,14 @@ abline(v=0, lty=2)
 
 ```
 
-Given our data and prior knowledge, there is a 95% probability that Disney's average rating is between 0.3684 points lower and 1.1846 points higher than LucasFilms' average rating, and there is about a 85.3737% chance that the average rating for Disney content is greater than that of LucasFilms content.
+Given our data and prior knowledge, there is a 95% probability that Disney's average rating is between 0.3684 points lower and 1.1846 points higher than Lucasfilm's average rating, and there is about a 85.3737% chance that the average rating for Disney content is greater than that of Lucasfilm content.
 
 ### Conclusions
 
-We were able to infer prior distributions for the $\mu$ and $\sigma^2$ for both the population of Disney content and the population of LucasFilms content, and then via Gibb's Sampling, we determined a posterior for $\mu$ and $\sigma^2$ for each of these populations by referring to the the collected data.
+We were able to infer prior distributions for the $\mu$ and $\sigma^2$ for both the population of Disney content and the population of Lucasfilm content. Then, via Gibb's Sampling, we determined a posterior for $\mu$ and $\sigma^2$ for each of these populations by referring to the collected data.
 
-We started with the same prior distributions for both populations. However, the data we collected (via Gibb's Sampling) shifted the posterior distributions so that the posterior for the average Disney content rating was right of the posterior for the average LucasFilms content rating. As for the variance, the posterior for the variance of Disney content ratings is relatively more narrow than the posterior for the variance of LucasFilms content ratings.
+We started with the same prior distributions for both populations. However, the data we collected (via Gibb's Sampling) shifted the posterior distributions so that the posterior for the average Disney content rating was right of the posterior for the average Lucasfilm content rating. As for the variance, the posterior for the variance of Disney content ratings is relatively more narrow than the posterior for the variance of Lucasfilm content ratings.
 
-According to our data and prior knowledge, we approximated the expected average of Disney content ratings to be 7.7391, which is higher than the derived expected average of LucasFilms content ratings, which is approximated to be 7.3326. As a result, the posterior distribution of the difference in means between Disney content ratings and LucasFilms content ratings $(\mu_D - \mu_L)$ includes an approximate 95% confidence interval of (-0.3684, 1.1846). Because roughly 14.6263% of this interval includes a higher $\mu_L$, it would be difficult for us to conclude with confidence that the average Disney content rating is higher than the average LucasFilms content rating. However, according to our results, it is more probable that the average Disney content rating is higher than the average LucasFilms content rating. Therefore, our limitations in this study would be that we fail to conclude with confidence that Disney generally receives higher ratings for Star Wars content than LucasFilms, although it is more probable that that is the case. Because we are looking at overall content between Disney and LucasFilms, new ideas of study and questions to answer could include how the two companies compare when it comes to specifically "main series movies," or shows. Another study could even isolate Disney content, for example, and determine whether movies or shows receives higher ratings on average.
+According to our data and prior knowledge, we approximated the expected average of Disney content ratings to be 7.7391, which is higher than the derived expected average of Lucasfilm content ratings, which is approximated to be 7.3326. As a result, the posterior distribution of the difference in means between Disney content ratings and Lucasfilm content ratings $(\mu_D - \mu_L)$ includes an approximate 95% confidence interval of (-0.3684, 1.1846). Because roughly 14.6263% of this interval includes a higher $\mu_L$, it would be difficult for us to conclude with confidence that the average Disney content rating is higher than the average Lucasfilm content rating. However, according to our results, it is more probable that the average Disney content rating is higher than the average Lucasfilm content rating. Therefore, our limitations in this study would be that we fail to conclude with confidence that Disney generally receives higher ratings for Star Wars content than Lucasfilm, although it is more probable that that is the case. Because we are looking at overall content between Disney and Lucasfilm, new ideas of study and questions to answer could include how the two companies compare when it comes to specifically "main series movies" or shows. Another study could even isolate Disney content, for example, and determine whether movies or shows receive higher ratings on average.
 
 
